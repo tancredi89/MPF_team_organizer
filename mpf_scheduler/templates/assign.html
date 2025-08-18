@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<h2>{{ title }}</h2>
+<form method="POST">
+  {{ form.hidden_tag() }}
+  <p>{{ form.user_id.label }}<br>{{ form.user_id() }}</p>
+  <p>{{ form.mission_id.label }}<br>{{ form.mission_id() }}</p>
+  <p>{{ form.date.label }}<br>{{ form.date() }}</p>
+  <p>{{ form.submit() }}</p>
+</form>
+<p><a href="{{ url_for('main.dashboard') }}">Back to Dashboard</a></p>
+{% endblock %}

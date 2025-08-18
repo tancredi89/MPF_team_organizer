@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h2>Dashboard - {{ year }}-{{ '%02d' % month }}</h2>
+<p>
+  <a href="{{ url_for('main.dashboard', year=year, month=month-1 if month>1 else 12, 
+    **({'year': year-1} if month==1 else {})) }}">Previous Month</a> |
+  <a href="{{ url_for('main.dashboard', year=year, month=month+1 if month<12 else 1, 
+    **({'year': year+1} if month==12 else {})) }}">Next Month</a>
+</p>
+
+<table class="calendar">
+  <thead>
+    <tr>
+      <th>User / Mission</th>
+      {% for day in dates %}
+      <th {% if day.weekday() >=5 %}class="weekend"{% endif %}>{{ day.day }}</th>
+      {% endfor %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for user in users %}
+    <tr>
+      <td>{{ user.username }}</td>
+      {% for day in dates %}
+        <td {% if day.weekday() >= 5 %}class="weekend"{% endif %}>
+          {% for mission in missions %}
+            {% if user.username in assignment_map[day][mission.id] %}
+              <div class="assignment">{{ mission.name }}</div>
+            {% endif %}
+            {% if user.username in on_call_map[day][mission.id] %}
+              <div class="oncall">On-call: {{ mission.name }}</div>
+            {% endif %}
+          {% endfor %}
+        </td>
+      {% endfor %}
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h3>Summary of Days Assigned Per Mission</h3>
+<table>
+  <thead>
+    <tr>
+      <th>User</th>
+      {% for mission in missions %}
+        <th>{{ mission.name }}</th>
+      {% endfor %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for user in users %}
+    <tr>
+      <td>{{ user.username }}</td>
+      {% for mission in missions %}
+      <td>{{ user_summary[user.username][mission.name] or 0 }}</td>
+      {% endfor %}
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<p><a href="{{ url_for('main.export_excel', year=year, month=month) }}">Export this month to Excel</a></p>
+
+{% endblock %}

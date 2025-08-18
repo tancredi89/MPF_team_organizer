@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}Missions{% endblock %}
+{% block content %}
+<h2>Missions</h2>
+
+<form method="POST">
+  <p><input type="text" name="name" placeholder="New mission name" required></p>
+  <p><input type="submit" value="Add Mission"></p>
+</form>
+
+<h3>Existing Missions</h3>
+<ul>
+  {% for mission in missions %}
+  <li>{{ mission.name }}</li>
+  {% endfor %}
+</ul>
+{% endblock %}
