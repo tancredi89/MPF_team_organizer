@@ -2,16 +2,13 @@
 {% block title %}Missions{% endblock %}
 {% block content %}
 <h2>Missions</h2>
-
 <form method="POST">
-  <p><input type="text" name="name" placeholder="New mission name" required></p>
-  <p><input type="submit" value="Add Mission"></p>
+  {{ form.hidden_tag() }}
+  <p>{{ form.name.label }}<br>{{ form.name(size=30) }}</p>
+  <p>{{ form.submit() }}</p>
 </form>
-
 <h3>Existing Missions</h3>
 <ul>
-  {% for mission in missions %}
-  <li>{{ mission.name }}</li>
-  {% endfor %}
+  {% for m in missions %}<li>{{ m.name }}</li>{% endfor %}
 </ul>
 {% endblock %}

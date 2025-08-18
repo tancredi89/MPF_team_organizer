@@ -1,90 +1,42 @@
-<!DOCTYPE html>
+{% macro option_selected(val, current) -%}
+  {% if val == current %}selected{% endif %}
+{%- endmacro %}
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>{% block title %}MPF Scheduler{% endblock %}</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
-        nav {
-            background-color: #333;
-            color: white;
-            padding: 10px;
-        }
-        nav a {
-            color: white;
-            margin-right: 15px;
-            text-decoration: none;
-        }
-        .content {
-            padding: 20px;
-        }
-        .weekend { background-color: #fdd; }
-        .cell { padding: 5px; border: 1px solid #ccc; min-width: 120px; }
-        table { border-collapse: collapse; }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}MPF Scheduler{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <nav>
-        <a href="{{ url_for('main.dashboard') }}">Dashboard</a>
-        {% if current_user.is_authenticated and current_user.role == 'admin' %}
-            <a href="{{ url_for('main.users') }}">Users</a>
+  <nav>
+    <ul>
+      {% if current_user.is_authenticated %}
+        <li><a href="{{ url_for('main.dashboard') }}">Dashboard</a></li>
+        {% if current_user.role == 'admin' %}
+          <li><a href="{{ url_for('main.users') }}">Users</a></li>
+          <li><a href="{{ url_for('main.missions') }}">Missions</a></li>
+          <li><a href="{{ url_for('main.assign') }}">Assign</a></li>
+          <li><a href="{{ url_for('main.oncall_assign') }}">Assign On-Call</a></li>
         {% endif %}
-        {% if current_user.is_authenticated and current_user.role == 'admin' %}
-<li><a href="{{ url_for('main.assignments') }}">Assignments</a></li>
-{% endif %}
-
-        <a href="{{ url_for('auth.logout') }}">Logout</a>
-    </nav>
-    <div class="content">
-        {% with messages =<!DOCTYPE html>
-            <html lang="en">
-            <head>
-            <meta charset="UTF-8" />
-            <meta name="viewport" content="width=device-width, initial-scale=1" />
-            <title>{% block title %}MPF Scheduler{% endblock %}</title>
-            <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-            </head>
-            <body>
-            <nav>
-              <ul>
-                {% if current_user.is_authenticated %}
-                  <li><a href="{{ url_for('main.dashboard') }}">Dashboard</a></li>
-                  {% if current_user.role == 'admin' %}
-                  <li><a href="{{ url_for('main.users') }}">Users</a></li>
-                  <li><a href="{{ url_for('main.missions') }}">Missions</a></li>
-                  <li><a href="{{ url_for('main.assign') }}">Assign</a></li>
-                  <li><a href="{{ url_for('main.oncall_assign') }}">Assign On-Call</a></li>
-                  {% endif %}
-                  <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
-                {% else %}
-                  <li><a href="{{ url_for('auth.login') }}">Login</a></li>
-                {% endif %}
-              </ul>
-            </nav>
-            <div class="container">
-              {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                  <ul class="flashes">
-                    {% for message in messages %}
-                      <li>{{ message }}</li>
-                    {% endfor %}
-                  </ul>
-                {% endif %}
-              {% endwith %}
-              {% block content %}{% endblock %}
-            </div>
-            </body>
-            </html>
-             get_flashed_messages() %}
-          {% if messages %}
-            <ul>
-              {% for message in messages %}
-                <li>{{ message }}</li>
-              {% endfor %}
-            </ul>
-          {% endif %}
-        {% endwith %}
-        {% block content %}{% endblock %}
-    </div>
+        <li class="right"><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+      {% else %}
+        <li><a href="{{ url_for('auth.login') }}">Login</a></li>
+      {% endif %}
+    </ul>
+  </nav>
+  <div class="container">
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul class="flashes">
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </div>
 </body>
 </html>

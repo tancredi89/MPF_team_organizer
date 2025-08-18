@@ -2,65 +2,89 @@
 {% block title %}Dashboard{% endblock %}
 {% block content %}
 <h2>Dashboard - {{ year }}-{{ '%02d' % month }}</h2>
-<p>
-  <a href="{{ url_for('main.dashboard', year=year, month=month-1 if month>1 else 12, 
-    **({'year': year-1} if month==1 else {})) }}">Previous Month</a> |
-  <a href="{{ url_for('main.dashboard', year=year, month=month+1 if month<12 else 1, 
-    **({'year': year+1} if month==12 else {})) }}">Next Month</a>
-</p>
+
+<form method="get" class="filters">
+  <label>Year:
+    <select name="year">
+      {% for y in range(year-2, year+3) %}
+        <option value="{{ y }}" {% if y == year %}selected{% endif %}>{{ y }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <label>Month:
+    <select name="month">
+      {% for m in range(1,13) %}
+        <option value="{{ m }}" {% if m == month %}selected{% endif %}>{{ m }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <label>User:
+    <select name="user_id">
+      <option value="">All</option>
+      {% for u in all_users %}
+        <option value="{{ u.id }}" {% if filter_user == u.id %}selected{% endif %}>{{ u.username }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <label>Mission:
+    <select name="mission_id">
+      <option value="">All</option>
+      {% for m in all_missions %}
+        <option value="{{ m.id }}" {% if filter_mission == m.id %}selected{% endif %}>{{ m.name }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <button type="submit">Apply</button>
+  <a class="btn" href="{{ url_for('main.export_excel', year=year, month=month) }}">Export Excel</a>
+</form>
 
 <table class="calendar">
   <thead>
     <tr>
-      <th>User / Mission</th>
-      {% for day in dates %}
-      <th {% if day.weekday() >=5 %}class="weekend"{% endif %}>{{ day.day }}</th>
+      <th>User / Day</th>
+      {% for d in dates %}
+        <th class="{% if d.weekday()>=5 %}weekend{% endif %}">{{ d.day }}</th>
       {% endfor %}
     </tr>
   </thead>
   <tbody>
     {% for user in users %}
     <tr>
-      <td>{{ user.username }}</td>
-      {% for day in dates %}
-        <td {% if day.weekday() >= 5 %}class="weekend"{% endif %}>
-          {% for mission in missions %}
-            {% if user.username in assignment_map[day][mission.id] %}
-              <div class="assignment">{{ mission.name }}</div>
-            {% endif %}
-            {% if user.username in on_call_map[day][mission.id] %}
-              <div class="oncall">On-call: {{ mission.name }}</div>
-            {% endif %}
-          {% endfor %}
-        </td>
+      <td class="sticky">{{ user.username }}</td>
+      {% for d in dates %}
+      <td class="{% if d.weekday()>=5 %}weekend{% endif %}">
+        {% for mission in missions %}
+          {% if user.username in assignment_map[d][mission.id] %}
+            <div class="assignment">{{ mission.name }}</div>
+          {% endif %}
+          {% if user.username in on_call_map[d][mission.id] %}
+            <div class="oncall">On-call: {{ mission.name }}</div>
+          {% endif %}
+        {% endfor %}
+      </td>
       {% endfor %}
     </tr>
     {% endfor %}
   </tbody>
 </table>
 
-<h3>Summary of Days Assigned Per Mission</h3>
-<table>
+<h3>Summary (Assigned Days Per Mission)</h3>
+<table class="summary">
   <thead>
     <tr>
       <th>User</th>
-      {% for mission in missions %}
-        <th>{{ mission.name }}</th>
-      {% endfor %}
+      {% for m in missions %}<th>{{ m.name }}</th>{% endfor %}
     </tr>
   </thead>
   <tbody>
     {% for user in users %}
     <tr>
       <td>{{ user.username }}</td>
-      {% for mission in missions %}
-      <td>{{ user_summary[user.username][mission.name] or 0 }}</td>
+      {% for m in missions %}
+        <td>{{ user_summary[user.username][m.name] or 0 }}</td>
       {% endfor %}
     </tr>
     {% endfor %}
   </tbody>
 </table>
-
-<p><a href="{{ url_for('main.export_excel', year=year, month=month) }}">Export this month to Excel</a></p>
-
 {% endblock %}

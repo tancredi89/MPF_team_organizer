@@ -1,0 +1,14 @@
+body { font-family: Arial, sans-serif; background: #f6f8fa; margin: 0; }
+nav ul { background:#24292e; color:#fff; padding:0.5rem 1rem; margin:0; list-style:none; display:flex; gap:1rem; }
+nav ul li a { color:#fff; text-decoration:none; }
+nav ul li.right { margin-left:auto; }
+.container { padding:1rem; }
+.flashes { color:#b00020; }
+table { width:100%; border-collapse:collapse; margin-top:1rem; }
+th, td { border:1px solid #ddd; padding:6px; vertical-align:top; }
+th.weekend, td.weekend { background:#eef7ff; }
+.assignment { background:#c8f7c5; margin:2px 0; padding:2px 4px; border-radius:3px; font-size:12px; }
+.oncall { background:#ffd1d1; margin:2px 0; padding:2px 4px; border-radius:3px; font-size:12px; font-style:italic; }
+.sticky { position:sticky; left:0; background:#fff; }
+.filters { display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap; }
+.btn { background:#2ea44f; color:#fff; padding:6px 10px; border-radius:4px; text-decoration:none; }

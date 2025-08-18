@@ -1,14 +1,13 @@
 from . import db, bcrypt
 from flask_login import UserMixin
-from datetime import date
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(150), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
-    role = db.Column(db.String(50), nullable=False)  # 'admin' or 'user'
-    assignments = db.relationship('Assignment', backref='user', lazy=True)
-    on_call_assignments = db.relationship('OnCallAssignment', backref='user', lazy=True)
+    role = db.Column(db.String(50), nullable=False, default='user')
+    assignments = db.relationship('Assignment', backref='user', lazy=True, cascade="all, delete-orphan")
+    on_call_assignments = db.relationship('OnCallAssignment', backref='user', lazy=True, cascade="all, delete-orphan")
 
     def check_password(self, password):
         return bcrypt.check_password_hash(self.password, password)
@@ -19,8 +18,8 @@ class User(UserMixin, db.Model):
 class Mission(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(150), unique=True, nullable=False)
-    assignments = db.relationship('Assignment', backref='mission', lazy=True)
-    on_call_assignments = db.relationship('OnCallAssignment', backref='mission', lazy=True)
+    assignments = db.relationship('Assignment', backref='mission', lazy=True, cascade="all, delete-orphan")
+    on_call_assignments = db.relationship('OnCallAssignment', backref='mission', lazy=True, cascade="all, delete-orphan")
 
 class Assignment(db.Model):
     id = db.Column(db.Integer, primary_key=True)

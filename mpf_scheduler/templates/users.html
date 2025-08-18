@@ -2,37 +2,31 @@
 {% block title %}Users{% endblock %}
 {% block content %}
 <h2>Users</h2>
-
 <form method="POST">
   {{ form.hidden_tag() }}
-  <p>{{ form.username.label }}<br>{{ form.username(size=32) }}</p>
-  <p>{{ form.password.label }}<br>{{ form.password(size=32) }}</p>
+  <p>{{ form.username.label }}<br>{{ form.username(size=30) }}</p>
+  <p>{{ form.password.label }}<br>{{ form.password(size=30) }}</p>
   <p>{{ form.role.label }}<br>{{ form.role() }}</p>
   <p>{{ form.submit() }}</p>
 </form>
 
 <h3>Existing Users</h3>
 <table>
-  <thead>
-    <tr><th>ID</th><th>Username</th><th>Role</th><th>Actions</th></tr>
-  </thead>
+  <thead><tr><th>ID</th><th>Username</th><th>Role</th><th>Actions</th></tr></thead>
   <tbody>
-    {% for user in users %}
-      <tr>
-        <td>{{ user.id }}</td>
-        <td>{{ user.username }}</td>
-        <td>{{ user.role }}</td>
-        <td>
-          <a href="{{ url_for('main.edit_user', user_id=user.id) }}">Edit</a>
-          {% if user.username != 'admin' %}
-          <form method="POST" action="{{ url_for('main.delete_user', user_id=user.id) }}" style="display:inline" onsubmit="return confirm('Delete user?');">
-            {{ csrf_token() }}
-            <button type="submit">Delete</button>
-          </form>
-          {% endif %}
-        </td>
-      </tr>
-    {% endfor %}
+  {% for u in users %}
+    <tr>
+      <td>{{ u.id }}</td><td>{{ u.username }}</td><td>{{ u.role }}</td>
+      <td>
+        <a href="{{ url_for('main.edit_user', user_id=u.id) }}">Edit</a>
+        {% if u.username != 'admin' %}
+        <form method="POST" action="{{ url_for('main.delete_user', user_id=u.id) }}" style="display:inline" onsubmit="return confirm('Delete user?');">
+          <button type="submit">Delete</button>
+        </form>
+        {% endif %}
+      </td>
+    </tr>
+  {% endfor %}
   </tbody>
 </table>
 {% endblock %}
